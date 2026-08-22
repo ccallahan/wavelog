@@ -10,6 +10,10 @@ if [ -f "/var/www/html/application/config/$CI_ENV/config.php" ] \
 	touch /var/www/html/install/.lock
 fi
 
+# Fix MPM conflict - disable all MPMs and enable only mpm_prefork
+a2dismod mpm_event mpm_worker mpm_async mpm_itk 2>/dev/null || true
+a2enmod mpm_prefork
+
 # Set PHP Settings
 PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT:-256M}
 PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE:-64M}
