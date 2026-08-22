@@ -26,7 +26,9 @@ RUN install-php-extensions \
 RUN useradd --system --no-create-home --shell /usr/sbin/nologin --gid www-data --uid 999 wavelog
 
 # server config
-RUN a2enmod rewrite \
+RUN a2dismod mpm_event || true \
+    && a2enmod mpm_prefork \
+    && a2enmod rewrite \
     && echo "* * * * * wavelog /usr/bin/curl --silent http://localhost/index.php/cron/run >/dev/null 2>&1" > /etc/cron.d/wavelog \
     && chmod 0644 /etc/cron.d/wavelog
 
